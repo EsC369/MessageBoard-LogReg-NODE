@@ -1,0 +1,4 @@
+{ 
+  "mongoURI": "mongodb://localhost/message_board_LogReg",
+  "sessionSecret": "Swordfish"
+}

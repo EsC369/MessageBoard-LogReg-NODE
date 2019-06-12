@@ -15,6 +15,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
+    "config": "^3.1.0",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
     "express-flash": "0.0.2",
