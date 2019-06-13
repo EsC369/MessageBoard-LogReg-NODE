@@ -17,30 +17,40 @@
       <% } %>
     <% } %>
   <!-- End Flash messages -->
-
-    <div class="container">
-  <h1>Messages Board!</h1>`
+<center>
+    <div class="container" style="margin-top: 20px;">
+        <form align="center" action="/logout" method="post">
+          <p><input type="submit" class="btn btn-lg btn-danger" value="Logout"></p>
+        </form>
+  <h1>Message Board!</h1>
+  <hr>
+  <br>
+  <h3>Add A Message below!</h3>
     <form action="/message" method="POST">
       <p>Message: <textarea name="message_content"></textarea></p>
       <button class="btn btn-success">Post Message</button>
     </form>
     <hr>
+    <div class="border">
     <% for(var i=0; i<messages.length; i++) { %>
       <!-- <h4>Name: <%= messages[i].name %></h4> -->
       <h4>Message: <%= messages[i].message_content %></h4>
           <% for(var j=0; j<messages[i].comments.length; j++) { %>
           <p>&emsp;Name: <%= messages[i].comments[j].name %></p>
-          <p>&emsp;Comment: <%= messages[i].comments[j].comment %></p>
+          <p>&emsp;Comment ID: <%= messages[i].comments[j]._id %></p>
+          <p>&emsp;Comment: <%= messages[i].comments[j].comment_content %></p>
       <% } %>
       <hr>
       <form action="/comment" method="POST">
           <input type="hidden" name="message_id" value="<%= messages[i]._id %>">
-          <p>&emsp;Comment: <textarea name="comment"></textarea></p>
+          <p>&emsp;Comment: <textarea name="comment_content"></textarea></p>
           <!-- <p>&emsp;<input type="submit" value="Post comment"></p> -->
           <button class="btn btn-success">Post comment</button>
       </form>
       <hr>
-  <% } %>
-    </div>
+    <% } %>
+  </div>
+</div>
+  </center>
   </body>
 </html>

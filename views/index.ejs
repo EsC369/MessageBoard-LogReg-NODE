@@ -17,28 +17,10 @@
       <% } %>
     <% } %>
   <!-- End Flash messages -->
-
+<center>
+  <h1>Login:</h1>
     <br><br>
   <div class="container">
-  <form action="/register" method="POST">
-    <div class="form-group">
-        <label for="exampleInputEmail1">Name</label>
-        <input type="name" class="form-control" name="name" placeholder="Enter email">
-      </div>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" name="email" placeholder="Enter email">
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" name="password" placeholder="Password">
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <br>
-    <hr>
-    <br>
-    
     <!-- Login Form: -->
     <form action="/login" method="POST">
       <div class="form-group">
@@ -48,11 +30,32 @@
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" name="passwordLog" placeholder="Password">
+          <input type="password" class="form-control" name="passwordLog" placeholder="Enter Password">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Login</button>
       </form>
+    <br>
+    <hr>
+    <br>
+    <h1>REGISTER:</h1>
+      <!--  Register Form -->
+      <form action="/register" method="POST">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Name:</label>
+            <input type="name" class="form-control" name="name" placeholder="Enter Name">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address:</label>
+            <input type="email" class="form-control" name="email" placeholder="Enter Email">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password:</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter Password">
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
     </div>
+  </center>
 
 </body>
 </html>
