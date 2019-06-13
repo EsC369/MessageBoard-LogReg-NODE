@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const config = require("config");
 const bcrypt = require("bcryptjs");
-// const Message = require("./models/message");
+const Message = require("./models/message");
 // const Comment = require("./models/comment");
 const User = require("./models/User");
 
@@ -15,10 +15,9 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session:
-const sessionSecret = config.get("sessionSecret");
 const session = require("express-session");
 app.use(session({
-  secret: sessionSecret,
+  secret: config.get("sessionSecret"),
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge: 600000 } // One hour I believe
@@ -34,12 +33,6 @@ app.get("/", function (req, res) {
   res.render("index");
 });
 
-// Temp Test Success route:
-// app.get("/success", (req, res) => {
-//   res.render("success");
-// });
-
-
 // Show all messages: 
 // app.get("TESTSHOWMSGS", (req, res) => {
 //   Message.find({}, function (err, messages) {
@@ -47,13 +40,20 @@ app.get("/", function (req, res) {
 //     res.render("index");
 // })
 
+
 app.post("/message", function (req, res) {
-  var message = new Message();
-  message.message = req.body.message;
-  message.name = req.body.name;
+  const message = new Message();
+  message.message_content = req.body.message_content;
   message.comments = [];
   message.save(function (err) {
-    res.redirect("/");
+    if (err) {
+      res.flash("error", "Error saving message");
+      res.redirect("/success");
+    }
+    Message.find({}, function(err, messages){
+      res.render("success", {messages: messages});
+      // res.redirect("/success", );
+    });
   });
 });
 
@@ -65,7 +65,7 @@ app.post("/comment", function (req, res) {
     else {
       message.comments.push({ comment: req.body.comment, name: req.body.name });
       message.save(function (err) {
-        res.redirect("/");
+        res.redirect("/success");
       });
     }
   });

@@ -4,10 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Log Reg App</title>
+  <title>Message Board</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>  
-  <h1>Hello <%= user.name %> </h1>
-  
-</body>
+<body>
+    <% JSON.stringify(messages) %>
+    <% if(messages.error) { %>
+      <div class="alert alert-danger">
+      <% for (var x of messages.error) { %>
+        <h6 align="center" style="color:red;"><%= x %></h6>
+      </div>
+      <% } %>
+    <% } %>
+  <!-- End Flash messages -->
+
+    <div class="container">
+  <h1>Messages Board!</h1>`
+    <form action="/message" method="POST">
+      <p>Message: <textarea name="message_content"></textarea></p>
+      <button class="btn btn-success">Post Message</button>
+    </form>
+    <hr>
+    <% for(var i=0; i<messages.length; i++) { %>
+      <!-- <h4>Name: <%= messages[i].name %></h4> -->
+      <h4>Message: <%= messages[i].message_content %></h4>
+          <% for(var j=0; j<messages[i].comments.length; j++) { %>
+          <p>&emsp;Name: <%= messages[i].comments[j].name %></p>
+          <p>&emsp;Comment: <%= messages[i].comments[j].comment %></p>
+      <% } %>
+      <hr>
+      <form action="/comment" method="POST">
+          <input type="hidden" name="message_id" value="<%= messages[i]._id %>">
+          <p>&emsp;Comment: <textarea name="comment"></textarea></p>
+          <!-- <p>&emsp;<input type="submit" value="Post comment"></p> -->
+          <button class="btn btn-success">Post comment</button>
+      </form>
+      <hr>
+  <% } %>
+    </div>
+  </body>
 </html>
