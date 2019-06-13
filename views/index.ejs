@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <title>Message Board Auth</title>
 </head>
 <body>
@@ -17,37 +18,37 @@
     <% } %>
   <!-- End Flash messages -->
 
+    <br><br>
   <div class="container">
   <form action="/register" method="POST">
     <div class="form-group">
-        <label for="exampleInputEmail1">Name address</label>
-        <input type="name" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+        <label for="exampleInputEmail1">Name</label>
+        <input type="name" class="form-control" name="name" placeholder="Enter email">
       </div>
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+        <input type="email" class="form-control" name="email" placeholder="Enter email">
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-      </div>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        <input type="password" class="form-control" name="password" placeholder="Password">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
+    <br>
+    <hr>
+    <br>
+    
     <!-- Login Form: -->
     <form action="/login" method="POST">
       <div class="form-group">
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+          <input type="email" class="form-control" name="emailLog" placeholder="Enter email">
         </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          <input type="password" class="form-control" name="passwordLog" placeholder="Password">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>

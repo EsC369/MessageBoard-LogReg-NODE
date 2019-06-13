@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const config = require("config");
+const bcrypt = require("bcryptjs");
 // const Message = require("./models/message");
 // const Comment = require("./models/comment");
 const User = require("./models/User");
@@ -30,11 +31,21 @@ app.use(flash());
 // Routes:
 
 app.get("/", function (req, res) {
-  Message.find({}, function (err, messages) {
-    // res.render("index", {messages: messages});
-    res.render("index");
-  });
+  res.render("index");
 });
+
+// Temp Test Success route:
+// app.get("/success", (req, res) => {
+//   res.render("success");
+// });
+
+
+// Show all messages: 
+// app.get("TESTSHOWMSGS", (req, res) => {
+//   Message.find({}, function (err, messages) {
+//     // res.render("index", {messages: messages});
+//     res.render("index");
+// })
 
 app.post("/message", function (req, res) {
   var message = new Message();
@@ -65,29 +76,29 @@ app.post("/comment", function (req, res) {
 // login:
 app.post('/login', (req, res) => {
   // console.log(" req.body: ", req.body);
-  const { email, password } = req.body;
+  const { emailLog, passwordLog } = req.body;
 
   // Simple validation:
-  if (!email || !password) {
-    res.flash("error", "ENTER ALL FIELDS")
-    res.render("/");
+  if (!emailLog || !passwordLog) {
+    req.flash("error", "ENTER ALL FIELDS")
+    res.redirect("/");
   }
 
-  User.findOne({ email: req.body.email }, function (err, user) {
+  User.findOne({ email: emailLog }, function (err, user) {
     if (err) {
+      req.flash("error", "User Doesnt Exists");
       res.redirect("/");
     }
     else {
       if (user) { // Means user was found
         console.log("found user with email " + user.email);
-        bcrypt.compare(req.body.password, user.password, (err, result) => {
+        bcrypt.compare(passwordLog, user.password, function (err, result) {
           if (result) {
             req.session.user_id = user._id;
-            req.session.user_email = user.email;
-            req.session.register_date = user.register_date;
             res.redirect("/success");
           }
           else {
+
             console.log("Wrong Password!")
             req.flash("error", "Wrong Password!")
             res.redirect("/");
@@ -100,11 +111,28 @@ app.post('/login', (req, res) => {
         res.redirect("/")
       }
     }
-  });
+  })
+});
+
+// Success Route:
+app.get("/success", function(req, res){
+  if(req.session.user_id) {
+      User.findOne({_id: req.session.user_id}, function(err, user){
+          if(err) {
+            res.redirect("/");
+          }
+          else {
+            res.render("success", {user: user});
+          }
+      });
+  }
+  else {
+      res.redirect("/");
+  }
 });
 
 //Logout:
-app.post("/logout", function(req, res){
+app.post("/logout", function (req, res) {
   req.session.user_id = null;
   res.redirect("/")
 });
@@ -142,25 +170,22 @@ app.post("/register", (req, res) => {
           newUser.password = hash;
           console.log("HASHED Password", hash);
           newUser.save((err) => {
-            console.log("User Already Exists!")
-            req.flash("error", "User Already Exists")
-            res.redirect("/");
+            if (err) {
+              console.log("User Already Exists!")
+              req.flash("error", "User Already Exists")
+              res.redirect("/");
+            }
           })
-          if(user){
-            console.log("success")
-            console.log(user)
-            // Add Into Session:
-            req.session.user_id = user._id;
-            req.session.user_email = user.email;
-            req.session.register_date = user.register_date;
-            res.render("/messageBoard");
-          }
-            
-           
+          console.log("success")
+          console.log("Added User info " + newUser + " into the DB")
+          // Add Into Session:
+          req.session.user_id = newUser._id;
+          res.redirect("/success");
         });
       });
     });
 });
+
 
 // Db Config:
 const db = config.get("mongoURI");

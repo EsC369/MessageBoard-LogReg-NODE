@@ -5,9 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Message Board</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
+    <% JSON.stringify(messages) %>
+    <% if(messages.error) { %>
+      <div class="alert alert-danger">
+      <% for (var x of messages.error) { %>
+        <h6 align="center" style="color:red;"><%= x %></h6>
+      </div>
+      <% } %>
+    <% } %>
+  <!-- End Flash messages -->
+
     <div class="container">
   <h1>Messages Board!</h1>`
     <form action="/message" method="POST">
