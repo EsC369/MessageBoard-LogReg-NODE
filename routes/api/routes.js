@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
     req.flash("error", "Please Enter All Login Fields")
     res.redirect("/");;
   }
-  else{
+  else {
     User.findOne({ email: emailLog }, function (err, user) {
       if (err) {
         req.flash("error", "User Doesnt Exists");
@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
               res.redirect("/success");
             }
             else {
-  
+
               console.log("Wrong Password!")
               req.flash("error", "Wrong Password!")
               res.redirect("/");
@@ -50,25 +50,25 @@ router.post('/login', (req, res) => {
 });
 
 // Success Route: --------------------------------------------
-router.get("/success", function(req, res){
-  if(req.session.user_id) {
-      User.findOne({_id: req.session.user_id}, function(err, user){
-          if(err) {
-            res.redirect("/");
+router.get("/success", function (req, res) {
+  if (req.session.user_id) {
+    User.findOne({ _id: req.session.user_id }, function (err, user) {
+      if (err) {
+        res.redirect("/");
+      }
+      else {
+        Message.find({}, function (err, messages) {
+          if (messages) {
+            res.render("success", { user: user, messages: messages });
+          } else {
+            res.render("success", { user: user });
           }
-          else {
-            Message.find({}, function(err, messages){
-              if(messages) {
-                res.render("success", {user: user, messages: messages});
-              }else{
-                res.render("success", {user: user});
-              }
-            })
-          }
-      });
+        })
+      }
+    });
   }
   else {
-      res.redirect("/");
+    res.redirect("/");
   }
 });
 
@@ -89,56 +89,64 @@ router.post("/register", (req, res) => {
     console.log("Please Enter All Register Fields!")
     req.flash("error", "Please Enter All Register Fields")
     res.redirect("/");;
-  }else{
-      // Check for existing user:
+  } else {
+    // Check for existing user:
     User.findOne({ email: email })
-    .then(user => {
-      if (user) {
-        console.log("User Already Exists!")
-        req.flash("error", "User Already Exists!")
-        res.redirect("/");
-      }
-      const newUser = new User({
-        name,
-        email,
-        password
-      })
-      // Create salt and hashed password:
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err
-          newUser.password = hash;
-          console.log("HASHED Password", hash);
-          newUser.save((err) => {
-            if (err) {
-              console.log("User Already Exists!")
-              req.flash("error", "User Already Exists")
-              res.redirect("/");
-            }
-          })
-          console.log("success")
-          // Add Into Session:
-          req.session.user_id = newUser._id;
-          res.redirect("/success");
+      .then(user => {
+        if (user) {
+          console.log("User Already Exists!")
+          req.flash("error", "User Already Exists!")
+          res.redirect("/");
+        }
+        const newUser = new User({
+          name,
+          email,
+          password
+        })
+        // Create salt and hashed password:
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err
+            newUser.password = hash;
+            console.log("HASHED Password", hash);
+            newUser.save((err) => {
+              if (err) {
+                console.log("User Already Exists!")
+                req.flash("error", "User Already Exists")
+                res.redirect("/");
+              }
+            })
+            console.log("success")
+            // Add Into Session:
+            req.session.user_id = newUser._id;
+            res.redirect("/success");
+          });
         });
       });
-    });
   }
 });
 
 // Message Route: --------------------------------------------
 router.post("/message", function (req, res) {
   const { message_content } = req.body;
-  const message = new Message();
-  message.message_content = message_content;
-  message.comments = [];
-  message.save(function (err) {
+
+  User.findOne({ _id: req.session.user_id }, function (err, user) {
     if (err) {
-      res.flash("error", "Error saving message");
-      res.redirect("/success");
+      req.flash("error", "User doesnt exist")
+      res.redirect("/");
     }
-    Message.find({}, function(err, messages){
-      res.render("success", {messages: messages});
+    const message = new Message();
+    message.name = user.name;
+    message.message_content = message_content;
+    message.comments = [];
+    message.save(function (err) {
+      if (err) {
+        res.flash("error", "Error saving message");
+        res.redirect("/success");
+      }
+      Message.find({}, function (err, messages) {
+        res.render("success", { messages: messages });
+      });
     });
   });
 });
@@ -146,32 +154,43 @@ router.post("/message", function (req, res) {
 // Comment route: --------------------------------------------
 router.post("/comment", function (req, res) {
   const { comment_content } = req.body;
-    Message.findOne({ _id: req.body.message_id }, function (err, message) {
+
+  User.findOne({ _id: req.session.user_id }, function (err, user) {
     if (err) {
+      req.flash("error", "User doesnt exist")
       res.redirect("/");
     }
     else {
-      console.log("MESSAGE INFO TEST ", message.comments);
-      newComment = {
-        name: "pussy Mcgee",
-        comment_content: comment_content
-      }
-      message.comments.unshift(newComment);
-      // message.comments.push(comment);
-      // message.comments = comment_content;
-      console.log("Comments array after push ", message);
-      // console.log("Comments array after push ", Array.from(message.comments))
-      message.save(function (err) {
-        if(err) {
-          req.flash("error", "Failed To Add Comment");
-          res.redirect("success");
+      console.log("User data aquired: ", user);
+      Message.findOne({ _id: req.body.message_id }, function (err, message) {
+        if (err) {
+          req.flash("MESSAGE DIDNT WORK");
+          res.redirect("/");
         }
-          Message.find({}, function(err, messages){
-          res.redirect("success");
-        })
-      });
+        else {
+          // console.log("User data aquired 2: ", user);
+          let userName = user.name;
+          // console.log("New user tests", userName);
+          newComment = {
+            name: userName,
+            comment_content: comment_content
+          }
+
+          message.comments.push(newComment);
+          // console.log("Comments array after push ", Array.from(message.comments))
+          message.save(function (err) {
+            if (err) {
+              req.flash("error", "Failed To Add Comment");
+              res.redirect("success");
+            }
+            res.redirect("success");
+          });
+        }
+      })
     }
-  });
+  })
 });
+
+
 
 module.exports = router;

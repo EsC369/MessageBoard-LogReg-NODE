@@ -8,6 +8,10 @@ const MessageSchema = new Schema({
     ref: "users"
   },
   
+  name: {
+    type: String,
+  },
+  
   message_content: {
     type: String,
     require: true,
@@ -18,7 +22,16 @@ const MessageSchema = new Schema({
       user: {
         type: Schema.Types.ObjectId,
         ref: "users"
-      }
+      },
+
+      name: {
+        type: String,
+      },
+
+      comment_content: {
+        type: String,
+        required: true
+      },
     }
   ],
 

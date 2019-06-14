@@ -33,12 +33,11 @@
     <hr>
     <div class="border">
     <% for(var i=0; i<messages.length; i++) { %>
-      <!-- <h4>Name: <%= messages[i].name %></h4> -->
-      <h4>Message: <%= messages[i].message_content %></h4>
+      <h4>Person who wrote this? : <%= messages[i].name %></h4>
+      <h4>Message Content : <%= messages[i].message_content %></h4>
           <% for(var j=0; j<messages[i].comments.length; j++) { %>
-          <p>&emsp;Name: <%= messages[i].comments[j].name %></p>
-          <p>&emsp;Comment ID: <%= messages[i].comments[j]._id %></p>
-          <p>&emsp;Comment: <%= messages[i].comments[j].comment_content %></p>
+          <p>&emsp;Who Wrote this? : <%= messages[i].comments[j].name %></p>
+          <p>&emsp;Comment Content: <%= messages[i].comments[j].comment_content %></p>
       <% } %>
       <hr>
       <form action="/comment" method="POST">
